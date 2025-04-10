@@ -1,0 +1,32 @@
+docker compose up airflow-init
+docker compose up -d
+
+
+
+New 
+docker cp dependencies.zip spark-master:/dependencies.zip
+
+docker cp spark_processing.py spark-master:/spark_processing.py
+
+
+New
+
+docker cp spark_streaming/spark_processing.py spark-master:/opt/spark/spark_streaming/spark_processing.py
+
+
+
+docker exec -it spark-master spark-submit \
+    --packages com.datastax.spark:spark-cassandra-connector_2.12:3.5.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1 \
+    --py-files /dependencies.zip \
+    /opt/spark/spark_streaming/spark_processing.py
+
+
+
+docker exec -it spark-master spark-submit \
+    --packages com.datastax.spark:spark-cassandra-connector_2.12:3.5.1,org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1 \
+    --py-files /dependencies.zip \
+    /opt/spark/spark_streaming/spark_processing.py
+
+
+
+docker compose restart airflow-webserver airflow-scheduler
